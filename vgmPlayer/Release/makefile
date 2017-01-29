@@ -49,7 +49,7 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 AR += \
-D:/vgmPlayer/Release/arduino.ar \
+D:/ym2612/vgmPlayer/Release/arduino.ar \
 
 ELF += \
 vgmPlayer.elf \
@@ -65,19 +65,19 @@ all: vgmPlayer
 vgmPlayer: $(HEX)
 	@echo 'Building target: $@'
 	@echo 'Printing size:'
-	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-size" -A "D:/vgmPlayer/Release/vgmPlayer.elf"
+	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-size" -A "D:/ym2612/vgmPlayer/Release/vgmPlayer.elf"
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-D:/vgmPlayer/Release/arduino.ar: $(AR_OBJ)
+D:/ym2612/vgmPlayer/Release/arduino.ar: $(AR_OBJ)
 	@echo 'Starting archiver'
-	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-gcc-ar" rcs    D:/vgmPlayer/Release/arduino.ar $(AR_OBJ)
+	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-gcc-ar" rcs    D:/ym2612/vgmPlayer/Release/arduino.ar $(AR_OBJ)
 	@echo 'Finished building: $@'
 	@echo ' '
 
 vgmPlayer.elf: $(LINK_OBJ) $(AR)
 	@echo 'Starting combiner'
-	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-gcc" -Wall -Wextra -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections -mmcu=atmega328p -o "D:\vgmPlayer/Release/vgmPlayer.elf"   $(LINK_OBJ) $(AR)   D:/vgmPlayer/Release/arduino.ar  "-LD:\vgmPlayer/Release" -lm
+	"D:\sloeber\/arduinoPlugin/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.3-arduino2/bin/avr-gcc" -Wall -Wextra -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections -mmcu=atmega328p -o "D:\ym2612\vgmPlayer/Release/vgmPlayer.elf"   $(LINK_OBJ) $(AR)   D:/ym2612/vgmPlayer/Release/arduino.ar  "-LD:\ym2612\vgmPlayer/Release" -lm
 	@echo 'Finished building: $@'
 	@echo ' '
 
