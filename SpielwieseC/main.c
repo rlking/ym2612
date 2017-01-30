@@ -6,7 +6,7 @@
 
 int main(void) {
 
-	FILE *f = fopen("C:\\Users\\rlking\\island.vgm", "rb");
+	FILE *f = fopen("C:\\Users\\rlking\\greenhill1.vgm", "rb");
 	fseek(f, 0, SEEK_END);
 	long fsize = ftell(f);
 	//fseek(f, 0, SEEK_SET);  //same as rewind(f);
@@ -19,7 +19,10 @@ int main(void) {
 	uint32_t nSamples = 0;
 	for (int i = 0; i < fsize; i++) {
 
-		if (music[i] == 0x52) {
+		if (music[i] == 0x4F) {
+			//Game Gear PSG stereo, write dd to port 0x06
+			i += 1;
+		} else if (music[i] == 0x52) {
 			//write_data(music[i + 1], music[i + 2], PORT_0);
 			printf("PORT_0: %x %x\n", music[i + 1], music[i + 2]);
 			i += 2;
@@ -35,19 +38,48 @@ int main(void) {
 		else if (music[i] == 0x61) {
 			//All integer values are *unsigned* and written in "Intel" byte order (Little Endian), so for example 0x12345678 is written as 0x78 0x56 0x34 0x12.
 			uint16_t wait_n = music[i + 1] << 0 | (music[i + 2] << 8);
-			printf("wait 0x61 samples: %d ys: %d\n", wait_n, (wait_n * 1000000)/ 44100);
+			printf("wait 0x61 samples: %d ys: %d\n", wait_n,
+					(wait_n * 1000000) / 44100);
 			nSamples += wait_n;
 			//Sleep((wait_n * 1000)/ 44100);
 			i += 2;
-		} else if (music[i] >= 0x70 && music[i] <= 0x7f) {
+		} else if (music[i] == 0x62) {
+			//0x62		wait 735 samples (60th of a second), a shortcut for 0x61 0xdf 0x02
+			nSamples += 735;
+		} else if (music[i] == 0x63) {
+			//0x63		wait 882 samples (50th of a second), a shortcut for 0x61 0x72 0x03
+			nSamples += 882;
+		}
+
+		else if (music[i] >= 0x70 && music[i] <= 0x7f) {
 			uint16_t samp = music[i] & 0x0f;
-			printf("wait 0x7X samples: %d ys: %d\n", samp, (samp * 1000000)/ 44100);
+			printf("wait 0x7X samples: %d ys: %d\n", samp,
+					(samp * 1000000) / 44100);
 			nSamples += samp;
 			//Sleep((samp * 1000)/ 44100);
-		} else if (music[i] == 0x66) {
+		} else if (music[i] >= 0x80 && music[i] <= 0x8f) {
+			//YM2612 port 0 address 2A write from the data bank, then wait n samples;
+			uint16_t samp = music[i] & 0x0f;
+			printf("wait 0x8X samples: %d ys: %d\n", samp,
+					(samp * 1000000) / 44100);
+			nSamples += samp;
+		} else if (music[i] == 0x67) {
+			//data block 0x67 0x66 tt ss ss ss ss (data)
+			uint8_t data_type = music[i + 2];
+			uint16_t size = music[i + 3] << 0 | (music[i + 4] << 8)
+					| (music[i + 5] << 16) | (music[i + 6] << 24);
+			printf("data block %d, size: %d\n", data_type, size);
+			i += 6 + size;
+		} else if (music[i] == 0xE0) {
+			//0xE0	dddddddd	Seek to offset dddddddd (Intel byte order) in PCM data bank of data block type 0 (YM2612).
+			i += 4;
+		}
+
+		else if (music[i] == 0x66) {
 			break;
 		} else {
 			printf("unbekanntes zeichen %x   pos:%d\n", music[i], i);
+			break;
 		}
 
 	}
