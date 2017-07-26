@@ -2,15 +2,20 @@
 //This is a automatic generated file
 //Please do not modify this file
 //If you touch this file your change will be overwritten during the next build
-//This file has been generated on 2017-07-26 22:34:33
+//This file has been generated on 2017-07-27 01:22:10
 
 #include "Arduino.h"
 #include "Arduino.h"
 #include <stdio.h>
 #include <util/delay.h>
+#include "VgmPlayer.h"
 void setup() ;
 void loop() ;
-int readChunk(uint8_t *buffer, uint32_t *dataOffset) ;
+uint8_t readByte() ;
+void readBytes(int n) ;
+int readChunk() ;
+void write_data(uint8_t reg, uint8_t data, uint8_t port) ;
+void write_ym(uint8_t data) ;
 
 #include "TeensySerialTest.ino"
 

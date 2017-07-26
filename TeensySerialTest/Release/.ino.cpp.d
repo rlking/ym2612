@@ -19,7 +19,7 @@
  C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/elapsedMillis.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/Arduino.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/pins_arduino.h \
- ..\TeensySerialTest.ino
+ ..\VgmPlayer.h ..\TeensySerialTest.ino
 
 C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/Arduino.h:
 
@@ -60,5 +60,7 @@ C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/elapsedMillis.
 C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/Arduino.h:
 
 C:\Program\ Files\ (x86)\Arduino\hardware\teensy\avr\cores\teensy/pins_arduino.h:
+
+..\VgmPlayer.h:
 
 ..\TeensySerialTest.ino:
