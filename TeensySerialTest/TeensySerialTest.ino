@@ -47,6 +47,7 @@ void loop() {
 	memset(&buffer[0], 0, sizeof(buffer));
 
 	uint32_t startTime = 0;
+	uint32_t startTime2 = 0;
 	uint32_t times = 0;
 	uint32_t sumTime = 0;
 	int bytesRead = 0;
@@ -122,9 +123,13 @@ void loop() {
 		if (waitSamples > 0) {
 			startTime = micros();
 			while (startTime + waitMicrosSec > micros()) {
-				if (waitSamples >= 4) {
+				if (waitSamples >= 1) {
 					if (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
-						readChunk();
+						startTime2 = micros();
+						bytesRead = readChunk();
+						times++;
+						sumTime += micros() - startTime2;
+						sumBytesRead += bytesRead;
 					}
 				}
 			}
@@ -187,7 +192,7 @@ void loop() {
 			sprintf(log_buffer, "end of data");
 			Serial.println(log_buffer);
 			Serial.flush();
-			return;
+			break;
 		} else {
 			sprintf(log_buffer, "unbekanntes zeichen: 0x%x / %d pos: %ld",
 					buffer[0], buffer[0], i);
@@ -196,6 +201,9 @@ void loop() {
 			return;
 		}
 	}
+	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu\n",
+			times, sumTime / times, sumBytesRead / times);
+	Serial.print(log_buffer);
 }
 
 uint8_t readByte() {
@@ -267,11 +275,11 @@ void write_data(uint8_t reg, uint8_t data, uint8_t port) {
 void write_ym(uint8_t data) {
 	YM_CTRL_PORT &= ~_BV(YM_CS); // CS LOW
 	YM_DATA_PORT = data;
-	_delay_us(2);
+	//_delay_us(2);
 	YM_CTRL_PORT &= ~_BV(YM_WR); // Write data
-	_delay_us(5);
+	//_delay_us(5);
 	YM_CTRL_PORT |= _BV(YM_WR);
-	_delay_us(5);
+	//_delay_us(5);
 	YM_CTRL_PORT |= _BV(YM_CS); // CS HIGH
 }
 
