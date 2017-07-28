@@ -48,12 +48,14 @@ void loop() {
 
 	uint32_t startTime = 0;
 	uint32_t startTime2 = 0;
+	uint32_t startPlayback = 0;
 	uint32_t times = 0;
 	uint32_t sumTime = 0;
 	int bytesRead = 0;
 	uint32_t sumBytesRead = 0;
 
 	uint32_t size = 0;
+	uint32_t samples = 0;
 	uint32_t i = 0;
 	uint32_t waitSamples = 0;
 
@@ -89,6 +91,7 @@ void loop() {
 		return;
 	}
 
+	startPlayback = millis();
 	//ident check
 	readBytes(4);
 	if (!(buffer[0] == 0x56 && buffer[1] == 0x67 && buffer[2] == 0x6d
@@ -104,8 +107,8 @@ void loop() {
 	//total samples
 	readBytes(20);
 	readBytes(4);
-	const uint32_t *samples = (uint32_t *) &buffer[0];
-	sprintf(log_buffer, "samples: %lu", *samples);
+	memcpy(&samples, &buffer[0], sizeof(uint32_t));
+	sprintf(log_buffer, "samples: %lu", samples);
 	Serial.println(log_buffer);
 
 	readBytes(36);
@@ -119,17 +122,17 @@ void loop() {
 			return;
 		}
 
-		uint32_t waitMicrosSec = (waitSamples * 10000) / 441;
 		if (waitSamples > 0) {
+			uint32_t waitMicrosSec = (waitSamples * 10000) / 441;
 			startTime = micros();
-			while (startTime + waitMicrosSec > micros()) {
+			while (startTime + waitMicrosSec - 50 > micros()) {
 				if (waitSamples >= 1) {
 					if (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
-						startTime2 = micros();
+						//startTime2 = micros();
 						bytesRead = readChunk();
-						times++;
-						sumTime += micros() - startTime2;
-						sumBytesRead += bytesRead;
+						//times++;
+						//sumTime += micros() - startTime2;
+						//sumBytesRead += bytesRead;
 					}
 				}
 			}
@@ -143,66 +146,123 @@ void loop() {
 
 		waitSamples = 0;
 
-		if (buffer[0] == 0x4F) {
+		times++;
+		startTime2 = micros();
+		switch (buffer[0]) {
+		case 0x4F: {
 			//0x4F dd    : Game Gear PSG stereo, write dd to port 0x06
 			buffer[1] = readByte();
 			i += 1;
-		} else if (buffer[0] == 0x52) {
+			break;
+		}
+		case 0x52: {
 			//0x52 aa dd : YM2612 port 0, write value dd to register aa
 			buffer[1] = readByte();
 			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_0);
 			//System.out.printf("PORT_0: %x %x\n", music[i + 1], music[i + 2]);
 			i += 2;
-		} else if (buffer[0] == 0x53) {
+			break;
+		}
+		case 0x53: {
 			//0x53 aa dd : YM2612 port 1, write value dd to register aa
 			buffer[1] = readByte();
 			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_1);
 			//System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
 			i += 2;
-		} else if (buffer[0] == 0x50) {
+			break;
+		}
+		case 0x50: {
 			//0x50	dd	PSG (SN76489/SN76496) write value dd
 			buffer[1] = readByte();
 			// skip
 			i += 1;
-		} else if (buffer[0] == 0x61) {
+			break;
+		}
+		case 0x61: {
 			buffer[1] = readByte();
 			buffer[2] = readByte();
 			waitSamples = ((buffer[1] << 0) & 0x000000FF)
 					| ((buffer[2] << 8) & 0x0000FF00);
 			i += 2;
-		} else if (buffer[0] == 0x62) {
+			break;
+		}
+		case 0x62: {
 			//0x62		wait 735 samples (60th of a second), a shortcut for 0x61 0xdf 0x02
 			waitSamples = 735;
-		} else if (buffer[0] == 0x63) {
+			break;
+		}
+		case 0x63: {
 			//0x63		wait 882 samples (50th of a second), a shortcut for 0x61 0x72 0x03
 			waitSamples = 882;
-		} else if (buffer[0] >= 0x70 && buffer[0] <= 0x7f) {
+			break;
+		}
+		case 0x70:
+		case 0x71:
+		case 0x72:
+		case 0x73:
+		case 0x74:
+		case 0x75:
+		case 0x76:
+		case 0x77:
+		case 0x78:
+		case 0x79:
+		case 0x7a:
+		case 0x7b:
+		case 0x7c:
+		case 0x7d:
+		case 0x7e:
+		case 0x7f: {
 			//0x7n       : wait n+1 samples, n can range from 0 to 15
 			waitSamples = 1 + (buffer[0] & 0x0f);
-		} else if ((uint8_t) buffer[0] >= 0x80 && (uint8_t) buffer[0] <= 0x8f) {
+			break;
+		}
+		case 0x80:
+		case 0x81:
+		case 0x82:
+		case 0x83:
+		case 0x84:
+		case 0x85:
+		case 0x86:
+		case 0x87:
+		case 0x88:
+		case 0x89:
+		case 0x8a:
+		case 0x8b:
+		case 0x8c:
+		case 0x8d:
+		case 0x8e:
+		case 0x8f: {
 			//YM2612 port 0 address 2A write from the data bank, then wait n samples;
 			buffer[1] = readByte();
 			write_data(0x2a, buffer[1], PORT_0);
 			waitSamples = buffer[0] & 0x0f;
 			i += 1;
-		} else if (buffer[0] == 0x66) {
+			break;
+		}
+		case 0x66: {
 			//0x66       : end of sound data
 			sprintf(log_buffer, "end of data");
 			Serial.println(log_buffer);
 			Serial.flush();
-			break;
-		} else {
+			return;
+		}
+		default: {
 			sprintf(log_buffer, "unbekanntes zeichen: 0x%x / %d pos: %ld",
 					buffer[0], buffer[0], i);
 			Serial.println(log_buffer);
 			Serial.flush();
 			return;
 		}
+		}
+		sumTime += micros() - startTime2;
 	}
-	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu\n",
-			times, sumTime / times, sumBytesRead / times);
+	sprintf(log_buffer, "times: %lu average time: %lu\n", times,
+			sumTime / times/*, sumBytesRead / times*/);
+	Serial.print(log_buffer);
+	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples / 44100,
+			(millis() - startPlayback) / 1000);
 	Serial.print(log_buffer);
 }
 
