@@ -118,10 +118,13 @@ void loop() {
 	while (i < size) {
 		i++;
 		if (count <= 5) {
-			sprintf(log_buffer, "starved@%ld", i);
-			Serial.println(log_buffer);
-			Serial.flush();
-			return;
+			bytesRead = readChunk();
+			if (bytesRead <= 0) {
+				sprintf(log_buffer, "starved@%ld", i);
+				Serial.println(log_buffer);
+				Serial.flush();
+				return;
+			}
 		}
 
 		if (waitSamples > 0) {
@@ -129,7 +132,8 @@ void loop() {
 			double totalTime = startTime
 					+ sumSamples * (double) (1000000 / 44100);
 			double totalTime2 = startTime + sumSamples * 23;
-			double totalTime3 = startTime + (double)sumSamples * (double)22.67573696;
+			double totalTime3 = startTime
+					+ (double) sumSamples * (double) 22.67573696;
 			while (totalTime2 > micros()) {
 				//if (waitSamples >= 1) {
 				if (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
@@ -142,10 +146,10 @@ void loop() {
 				//}
 			}
 			/*Serial.println("oida");
-			Serial.println(totalTime);
-			Serial.println(totalTime2);
-			Serial.println(totalTime3);
-			Serial.println(micros());*/
+			 Serial.println(totalTime);
+			 Serial.println(totalTime2);
+			 Serial.println(totalTime3);
+			 Serial.println(micros());*/
 
 		}
 
