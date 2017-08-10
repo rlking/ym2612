@@ -9,7 +9,7 @@ void setup() {
 }
 
 #define RINGBUFF_SIZE 1024 * 7
-#define SERIAL_READ_SIZE 64
+#define SERIAL_READ_SIZE 8
 
 int readChunk();
 uint8_t readByte();
@@ -50,7 +50,9 @@ void loop() {
 	uint32_t startTime2 = 0;
 	uint32_t startPlayback = 0;
 	uint32_t times = 0;
+	uint32_t times2 = 0;
 	uint32_t sumTime = 0;
+	uint32_t sumTime2 = 0;
 	uint32_t sumSamples = 0;
 	int bytesRead = 0;
 	uint32_t sumBytesRead = 0;
@@ -119,38 +121,25 @@ void loop() {
 		i++;
 		if (count <= 5) {
 			bytesRead = readChunk();
-			if (bytesRead <= 0) {
+			if (bytesRead <= 0 && count == 0) {
 				sprintf(log_buffer, "starved@%ld", i);
 				Serial.println(log_buffer);
 				Serial.flush();
 				return;
 			}
 		}
-
 		if (waitSamples > 0) {
 			sumSamples += waitSamples;
-			double totalTime = startTime
-					+ sumSamples * (double) (1000000 / 44100);
-			double totalTime2 = startTime + sumSamples * 23;
-			double totalTime3 = startTime
-					+ (double) sumSamples * (double) 22.67573696;
-			while (totalTime2 > micros()) {
-				//if (waitSamples >= 1) {
+			double totalTime3 = startTime + sumSamples * 22.67573696;
+			while (totalTime3 > micros()) {
 				if (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
-					//startTime2 = micros();
+					startTime2 = micros();
 					bytesRead = readChunk();
-					//times++;
-					//sumTime += micros() - startTime2;
-					//sumBytesRead += bytesRead;
+					times2++;
+					sumTime2 += micros() - startTime2;
+					sumBytesRead += bytesRead;
 				}
-				//}
 			}
-			/*Serial.println("oida");
-			 Serial.println(totalTime);
-			 Serial.println(totalTime2);
-			 Serial.println(totalTime3);
-			 Serial.println(micros());*/
-
 		}
 
 		buffer[0] = rbuff[readOffset];
@@ -179,7 +168,6 @@ void loop() {
 			buffer[2] = rbuff[readOffset];
 			next();
 			write_data(buffer[1], buffer[2], PORT_0);
-			//System.out.printf("PORT_0: %x %x\n", music[i + 1], music[i + 2]);
 			i += 2;
 			break;
 		}
@@ -190,7 +178,6 @@ void loop() {
 			buffer[2] = rbuff[readOffset];
 			next();
 			write_data(buffer[1], buffer[2], PORT_1);
-			//System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
 			i += 2;
 			break;
 		}
@@ -273,8 +260,8 @@ void loop() {
 			break;
 		}
 		default: {
-			sprintf(log_buffer, "unbekanntes zeichen: 0x%x / %d pos: %ld",
-					buffer[0], buffer[0], i);
+			sprintf(log_buffer, "unkown command: 0x%x / %d pos: %ld", buffer[0],
+					buffer[0], i);
 			Serial.println(log_buffer);
 			Serial.flush();
 			return;
@@ -282,11 +269,14 @@ void loop() {
 		}
 		sumTime += micros() - startTime2;
 	}
-	sprintf(log_buffer, "times: %lu average time: %lu\n", times,
+	sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
+			times2, sumTime2 / times2, sumBytesRead / times2);
+	Serial.print(log_buffer);
+	sprintf(log_buffer, "loop times: %lu average time: %lu\n", times,
 			sumTime / times/*, sumBytesRead / times*/);
 	Serial.print(log_buffer);
-	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples / 44100,
-			(millis() - startPlayback) / 1000);
+	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples * 10 / 441,
+			(millis() - startPlayback));
 	Serial.print(log_buffer);
 }
 

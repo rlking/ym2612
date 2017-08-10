@@ -99,7 +99,7 @@ public class Main {
         readVGM(vgm);
 
         try {
-            final String port = "COM3";
+            final String port = "COM4";
             int baudRate = 1000000;
             java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
             while ( portEnum.hasMoreElements() )
