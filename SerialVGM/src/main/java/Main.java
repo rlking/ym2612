@@ -7,7 +7,8 @@ import java.util.stream.IntStream;
 
 public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\goldenaxetitle.vgm");
-    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
+    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
+    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
     public static byte[] data;
     public static int sent;
@@ -98,8 +99,14 @@ public class Main {
         readVGM(vgm);
 
         try {
-            final String port = "COM4";
+            final String port = "COM3";
             int baudRate = 1000000;
+            java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+            while ( portEnum.hasMoreElements() )
+            {
+                CommPortIdentifier portIdentifier = portEnum.nextElement();
+                System.out.println(portIdentifier.getName()  +  " - " +  getPortTypeName(portIdentifier.getPortType()) );
+            }
             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
             if (portIdentifier.isCurrentlyOwned()) {
                 System.out.println("Error: Port is currently in use");
@@ -222,7 +229,7 @@ public class Main {
                 //YM2612 port 0 address 2A write from the data bank, then wait n samples;
                 waitSamples = music[i] & 0x0f;
                 samplesSum += waitSamples;
-                //System.out.printf("0x8n index: %d write: 0x%x wait: %d %dys\n", datablockIndex, music[datablockOffset + datablockIndex], waitSamples, (waitSamples * 1000000) / 44100);
+                //System.out.printf("0x8n index: %d write: 0x%x wait: %d %dys %d\n", datablockIndex, music[datablockOffset + datablockIndex], waitSamples, (waitSamples * 1000000) / 44100, i);
                 bos.write(music, i, 1);
                 bos.write(music, datablockOffset + datablockIndex, 1);
                 datablockIndex++;
@@ -306,5 +313,24 @@ public class Main {
         sb.append(low);
 
         return sb.toString();
+    }
+
+    static String getPortTypeName ( int portType )
+    {
+        switch ( portType )
+        {
+            case CommPortIdentifier.PORT_I2C:
+                return "I2C";
+            case CommPortIdentifier.PORT_PARALLEL:
+                return "Parallel";
+            case CommPortIdentifier.PORT_RAW:
+                return "Raw";
+            case CommPortIdentifier.PORT_RS485:
+                return "RS485";
+            case CommPortIdentifier.PORT_SERIAL:
+                return "Serial";
+            default:
+                return "unknown type";
+        }
     }
 }
