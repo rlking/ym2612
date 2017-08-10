@@ -7,8 +7,8 @@ import java.util.stream.IntStream;
 
 public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\goldenaxetitle.vgm");
-    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
-    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
+    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
+    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
     public static byte[] data;
     public static int sent;

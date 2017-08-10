@@ -142,8 +142,7 @@ void loop() {
 			}
 		}
 
-		buffer[0] = rbuff[readOffset];
-		next();
+		buffer[0] = readByte();
 
 		//sprintf(log_buffer, " buffload: %lu i: %ld, available: %d cmd: 0x%x waitSamples: %lu ym: %lu",
 		//		count, i, Serial.available(), buffer[0], waitSamples, waitMicrosSec);
@@ -156,44 +155,36 @@ void loop() {
 		switch (buffer[0]) {
 		case 0x4F: {
 			//0x4F dd    : Game Gear PSG stereo, write dd to port 0x06
-			buffer[1] = rbuff[readOffset];
-			next();
+			buffer[1] = readByte();
 			i += 1;
 			break;
 		}
 		case 0x52: {
 			//0x52 aa dd : YM2612 port 0, write value dd to register aa
-			buffer[1] = rbuff[readOffset];
-			next();
-			buffer[2] = rbuff[readOffset];
-			next();
+			buffer[1] = readByte();
+			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_0);
 			i += 2;
 			break;
 		}
 		case 0x53: {
 			//0x53 aa dd : YM2612 port 1, write value dd to register aa
-			buffer[1] = rbuff[readOffset];
-			next();
-			buffer[2] = rbuff[readOffset];
-			next();
+			buffer[1] = readByte();
+			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_1);
 			i += 2;
 			break;
 		}
 		case 0x50: {
 			//0x50	dd	PSG (SN76489/SN76496) write value dd
-			buffer[1] = rbuff[readOffset];
-			next();
+			buffer[1] = readByte();
 			// skip
 			i += 1;
 			break;
 		}
 		case 0x61: {
-			buffer[1] = rbuff[readOffset];
-			next();
-			buffer[2] = rbuff[readOffset];
-			next();
+			buffer[1] = readByte();
+			buffer[2] = readByte();
 			waitSamples = ((buffer[1] << 0) & 0x000000FF)
 					| ((buffer[2] << 8) & 0x0000FF00);
 			i += 2;
@@ -246,8 +237,7 @@ void loop() {
 		case 0x8e:
 		case 0x8f: {
 			//YM2612 port 0 address 2A write from the data bank, then wait n samples;
-			write_data(0x2a, rbuff[readOffset], PORT_0);
-			next();
+			write_data(0x2a, readByte(), PORT_0);
 			waitSamples = buffer[0] & 0x0f;
 			i += 1;
 			break;
@@ -272,8 +262,8 @@ void loop() {
 	sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
 			times2, sumTime2 / times2, sumBytesRead / times2);
 	Serial.print(log_buffer);
-	sprintf(log_buffer, "loop times: %lu average time: %lu\n", times,
-			sumTime / times/*, sumBytesRead / times*/);
+	sprintf(log_buffer, "loop times: %lu average time: %luns\n", times,
+			(uint32_t) ((sumTime / (float) times) * 1000));
 	Serial.print(log_buffer);
 	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples * 10 / 441,
 			(millis() - startPlayback));
@@ -282,16 +272,12 @@ void loop() {
 
 uint8_t readByte() {
 	uint8_t ret = rbuff[readOffset];
-	next();
-	return ret;
-}
-
-void next() {
 	count--;
 	readOffset++;
 	if (readOffset == RINGBUFF_SIZE) {
 		readOffset = 0;
 	}
+	return ret;
 }
 
 void readBytes(int n) {
