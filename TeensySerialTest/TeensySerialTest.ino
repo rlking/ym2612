@@ -9,7 +9,7 @@ void setup() {
 }
 
 #define RINGBUFF_SIZE 1024 * 7
-#define SERIAL_READ_SIZE 8
+#define SERIAL_READ_SIZE 32
 
 int readChunk();
 uint8_t readByte();
@@ -57,14 +57,13 @@ void loop() {
 	int bytesRead = 0;
 	uint32_t sumBytesRead = 0;
 
-	uint32_t size = 0;
 	uint32_t samples = 0;
-	uint32_t i = 0;
 	uint32_t waitSamples = 0;
 
 	if (Serial.available() == 0) {
 		return;
 	}
+	//fill ring buffer
 	while (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
 		startTime = micros();
 		bytesRead = readChunk();
@@ -78,21 +77,6 @@ void loop() {
 	times = 0;
 	sumBytesRead = 0;
 	sumTime = 0;
-
-	readBytes(8);
-	if (buffer[0] == 'a' and buffer[1] == 'c' and buffer[2] == 'k'
-			and buffer[3] == 'n') {
-		size = (((int32_t) buffer[7]) & 0x000000FF)
-				| ((((int32_t) buffer[6]) << 8) & 0x0000FF00)
-				| ((((int32_t) buffer[5]) << 16) & 0x00FF0000)
-				| ((((int32_t) buffer[4]) << 24) & 0xFF000000);
-		sprintf(log_buffer, "file size: %ld", size);
-		Serial.println(log_buffer);
-	} else {
-		sprintf(log_buffer, "no ack -> exit");
-		Serial.println(log_buffer);
-		return;
-	}
 
 	//ident check
 	readBytes(4);
@@ -114,15 +98,13 @@ void loop() {
 	Serial.println(log_buffer);
 
 	readBytes(36);
-	i = 64;
 	startPlayback = millis();
 	startTime = micros();
-	while (i < size) {
-		i++;
-		if (count <= 5) {
+	while (sumSamples < samples) {
+		if (count <= 3) {
 			bytesRead = readChunk();
 			if (bytesRead <= 0 && count == 0) {
-				sprintf(log_buffer, "starved@%ld", i);
+				sprintf(log_buffer, "starved");
 				Serial.println(log_buffer);
 				Serial.flush();
 				return;
@@ -133,11 +115,11 @@ void loop() {
 			double totalTime3 = startTime + sumSamples * 22.67573696;
 			while (totalTime3 > micros()) {
 				if (count <= RINGBUFF_SIZE - SERIAL_READ_SIZE) {
-					startTime2 = micros();
+					//startTime2 = micros();
 					bytesRead = readChunk();
-					times2++;
-					sumTime2 += micros() - startTime2;
-					sumBytesRead += bytesRead;
+					//times2++;
+					//sumTime2 += micros() - startTime2;
+					//sumBytesRead += bytesRead;
 				}
 			}
 		}
@@ -150,13 +132,12 @@ void loop() {
 
 		waitSamples = 0;
 
-		times++;
-		startTime2 = micros();
+		//times++;
+		//startTime2 = micros();
 		switch (buffer[0]) {
 		case 0x4F: {
 			//0x4F dd    : Game Gear PSG stereo, write dd to port 0x06
 			buffer[1] = readByte();
-			i += 1;
 			break;
 		}
 		case 0x52: {
@@ -164,7 +145,6 @@ void loop() {
 			buffer[1] = readByte();
 			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_0);
-			i += 2;
 			break;
 		}
 		case 0x53: {
@@ -172,14 +152,12 @@ void loop() {
 			buffer[1] = readByte();
 			buffer[2] = readByte();
 			write_data(buffer[1], buffer[2], PORT_1);
-			i += 2;
 			break;
 		}
 		case 0x50: {
 			//0x50	dd	PSG (SN76489/SN76496) write value dd
 			buffer[1] = readByte();
 			// skip
-			i += 1;
 			break;
 		}
 		case 0x61: {
@@ -187,7 +165,6 @@ void loop() {
 			buffer[2] = readByte();
 			waitSamples = ((buffer[1] << 0) & 0x000000FF)
 					| ((buffer[2] << 8) & 0x0000FF00);
-			i += 2;
 			break;
 		}
 		case 0x62: {
@@ -239,7 +216,6 @@ void loop() {
 			//YM2612 port 0 address 2A write from the data bank, then wait n samples;
 			write_data(0x2a, readByte(), PORT_0);
 			waitSamples = buffer[0] & 0x0f;
-			i += 1;
 			break;
 		}
 		case 0x66: {
@@ -250,14 +226,14 @@ void loop() {
 			break;
 		}
 		default: {
-			sprintf(log_buffer, "unkown command: 0x%x / %d pos: %ld", buffer[0],
-					buffer[0], i);
+			sprintf(log_buffer, "unkown command: 0x%x / %d", buffer[0],
+					buffer[0]);
 			Serial.println(log_buffer);
 			Serial.flush();
 			return;
 		}
 		}
-		sumTime += micros() - startTime2;
+		//sumTime += micros() - startTime2;
 	}
 	sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
 			times2, sumTime2 / times2, sumBytesRead / times2);
