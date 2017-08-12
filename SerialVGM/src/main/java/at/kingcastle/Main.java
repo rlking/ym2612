@@ -1,23 +1,39 @@
 package at.kingcastle;
 
 import gnu.io.*;
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.CompressorOutputStream;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\goldenaxetitle.vgm");
-    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
-    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
+    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\dragonthroatcave.vgm");
+    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\boss1.vgm");
+    //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
+    public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
+    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
 
     public static InputStream in;
     public static OutputStream out;
+    public static Lock lock = new ReentrantLock();
+    public static Condition notFinished = lock.newCondition();
 
     public static volatile boolean stop_sending = false;
 
     public static class SerialReader implements SerialPortEventListener {
         private InputStream in;
-        private byte[] buffer = new byte[1024];
 
         public SerialReader(InputStream in) {
             this.in = in;
@@ -30,13 +46,21 @@ public class Main {
                 while ((data = in.read()) > -1) {
                     strBuff.append((char) data);
                     if (data == '\n') {
-                        System.out.print(strBuff.toString());
+                        String receivedStr = strBuff.toString();
+                        System.out.print("teensy: " + receivedStr);
+                        if (receivedStr.contains("end")) {
+                            lock.lock();
+                            notFinished.signalAll();
+                            lock.unlock();
+                        }
                         strBuff = new StringBuffer();
                     }
                 }
                 System.out.println(strBuff.toString());
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                lock.unlock();
             }
         }
     }
@@ -50,10 +74,33 @@ public class Main {
 
         public void run() {
             try {
-                expandVGM(vgm, out);
-                Thread.sleep(5000);
+                while (true) {
+                    File[] playlist = dir.listFiles(new FilenameFilter() {
+                        public boolean accept(File dir, String name) {
+                            if (name.endsWith(".vgz")) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    File[] playlist2 = new File[playlist.length - 0];
+                    playlist2 = Arrays.copyOfRange(playlist, 0, playlist2.length);
+                    for (File song : playlist2) {
+                        System.out.println("playing " + song.getName());
+                        BufferedInputStream in = new BufferedInputStream(new FileInputStream(song));
+                        GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
+                        expandVGM(gzIn, out);
+                        gzIn.close();
+                        lock.lock();
+                        notFinished.await();
+                        lock.unlock();
+                        Thread.sleep(1000);
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                lock.unlock();
             }
         }
     }
@@ -90,25 +137,18 @@ public class Main {
                     serialPort.notifyOnDataAvailable(true);
                     serialPort.notifyOnOverrunError(true);
 
-                    Thread.sleep(500); // goood lords
+                    //Thread.sleep(500); // goood lords
 
                     (new Thread(new SerialWriter(out))).start();
                 }
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void expandVGM(File file, OutputStream out) throws IOException{
-        byte[] music = new byte[(int) file.length()];
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            fis.read(music, 0, music.length);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+    public static void expandVGM(InputStream is, OutputStream out) throws IOException {
+        byte[] music = IOUtils.toByteArray(is);
 
         //ident check
         if (!(music[0] == 0x56 && music[1] == 0x67 && music[2] == 0x6d && music[3] == 0x20)) {
@@ -119,7 +159,7 @@ public class Main {
         //version
         int version = ((music[8] << 0) & 0x000000FF) | ((music[9] << 8) & 0x0000FF00)
                 | ((music[10] << 16) & 0x00FF0000) | ((music[11] << 24) & 0xFF000000);
-        System.out.println(BCDtoString(music[11]) + "." + BCDtoString(music[10]) + "." + BCDtoString(music[9]) + "." + BCDtoString(music[8]) + "   " + version);
+        System.out.println(BCDtoString(music[11]) + "." + BCDtoString(music[10]) + "." + BCDtoString(music[9]) + "." + BCDtoString(music[8]));
 
         //total samples
         int samples = ((music[24] << 0) & 0x000000FF) | ((music[25] << 8) & 0x0000FF00)
@@ -147,8 +187,8 @@ public class Main {
             } else if (music[i] == (byte) 0x53) {
                 //0x53 aa dd : YM2612 port 1, write value dd to register aa
                 //write_data(music[i + 1], music[i + 2], PORT_1);
-                //System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
                 bos.write(music, i, 3);
+                //System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
                 i += 2;
             } else if (music[i] == (byte) 0x50) {
                 //0x50	dd	PSG (SN76489/SN76496) write value dd
@@ -215,13 +255,15 @@ public class Main {
                 //busyWaitMicros(waitMicrosSec);
             }
 
-            if(bos.size() >= 100000) {
+            if (bos.size() >= 1024) {
                 byte[] packet = bos.toByteArray();
                 out.write(packet);
                 bos.reset();
             }
         }
-        System.out.printf("samples: %d ms: %d\n\n", samplesSum, (samplesSum * 1000) / 44100);
+        byte[] packet = bos.toByteArray();
+        out.write(packet);
+        System.out.printf("sent samples: %d ms: %d\n", samplesSum, (samplesSum * 1000) / 44100);
     }
 
     public static void busyWaitMicros(long micros) {

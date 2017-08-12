@@ -61,6 +61,7 @@ void loop() {
 	uint32_t waitSamples = 0;
 
 	if (Serial.available() == 0) {
+		_delay_ms(2000);
 		return;
 	}
 	//fill ring buffer
@@ -70,10 +71,13 @@ void loop() {
 		times++;
 		sumTime += micros() - startTime;
 		sumBytesRead += bytesRead;
+		if(bytesRead == 0) {
+			break;
+		}
 	}
-	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu\n",
+	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu",
 			times, sumTime / times, sumBytesRead / times);
-	Serial.print(log_buffer);
+	Serial.println(log_buffer);
 	times = 0;
 	sumBytesRead = 0;
 	sumTime = 0;
@@ -144,14 +148,14 @@ void loop() {
 			//0x52 aa dd : YM2612 port 0, write value dd to register aa
 			buffer[1] = readByte();
 			buffer[2] = readByte();
-			write_data(buffer[1], buffer[2], PORT_0);
+			write_data(buffer[1], buffer[2], REGISTER_1);
 			break;
 		}
 		case 0x53: {
 			//0x53 aa dd : YM2612 port 1, write value dd to register aa
 			buffer[1] = readByte();
 			buffer[2] = readByte();
-			write_data(buffer[1], buffer[2], PORT_1);
+			write_data(buffer[1], buffer[2], REGISTER_2);
 			break;
 		}
 		case 0x50: {
@@ -214,7 +218,7 @@ void loop() {
 		case 0x8e:
 		case 0x8f: {
 			//YM2612 port 0 address 2A write from the data bank, then wait n samples;
-			write_data(0x2a, readByte(), PORT_0);
+			write_data(0x2a, readByte(), REGISTER_1);
 			waitSamples = buffer[0] & 0x0f;
 			break;
 		}
@@ -235,7 +239,7 @@ void loop() {
 		}
 		//sumTime += micros() - startTime2;
 	}
-	sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
+	/*sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
 			times2, sumTime2 / times2, sumBytesRead / times2);
 	Serial.print(log_buffer);
 	sprintf(log_buffer, "loop times: %lu average time: %luns\n", times,
@@ -243,7 +247,7 @@ void loop() {
 	Serial.print(log_buffer);
 	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples * 10 / 441,
 			(millis() - startPlayback));
-	Serial.print(log_buffer);
+	Serial.print(log_buffer);*/
 }
 
 uint8_t readByte() {
@@ -286,40 +290,36 @@ int readChunk() {
 	return bytesRead;
 }
 
-/**
+/*
  A1 A0
- 0 0 - Writes address to PORT_0
- 0 1 - Writes data to the selected PART PORT_0 address
- 1 0 - Writes address to PORT_1
- 1 1 - Writes data to the selected PART PORT_1 address
+ 0  0  write address to register 1
+ 0  1  write data to register 1
+ 1  0  write address to register 2
+ 1  1  write data to register 2
  */
 
 void write_data(uint8_t reg, uint8_t data, uint8_t port) {
-	if (port == PORT_0) {
-		YM_CTRL_PORT &= ~(_BV(YM_A1) | _BV(YM_A0)); // a1 and a0 low
+	if (port == REGISTER_1) {
+		YM_CTRL_PORT &= ~(_BV(YM_A1) | _BV(YM_A0));
 	} else {
-		YM_CTRL_PORT &= ~(_BV(YM_A0)); // a0 low
-		YM_CTRL_PORT |= _BV(YM_A1); // a1 high
+		YM_CTRL_PORT &= ~(_BV(YM_A0));
+		YM_CTRL_PORT |= _BV(YM_A1);
 	}
 	write_ym(reg);
-
-	if (port == PORT_0) {
-		YM_CTRL_PORT &= ~(_BV(YM_A1)); // a1 low
-		YM_CTRL_PORT |= _BV(YM_A0); // a0 high
+	if (port == REGISTER_1) {
+		YM_CTRL_PORT &= ~(_BV(YM_A1));
+		YM_CTRL_PORT |= _BV(YM_A0);
 	} else {
-		YM_CTRL_PORT |= _BV(YM_A1) | _BV(YM_A0); // a1 and a0 high
+		YM_CTRL_PORT |= _BV(YM_A1) | _BV(YM_A0);
 	}
 	write_ym(data);
 }
 
 void write_ym(uint8_t data) {
-	YM_CTRL_PORT &= ~_BV(YM_CS); // CS LOW
+	YM_CTRL_PORT &= ~_BV(YM_CS);
 	YM_DATA_PORT = data;
-	//_delay_us(2);
-	YM_CTRL_PORT &= ~_BV(YM_WR); // Write data
-	//_delay_us(5);
+	YM_CTRL_PORT &= ~_BV(YM_WR);
 	YM_CTRL_PORT |= _BV(YM_WR);
-	//_delay_us(5);
-	YM_CTRL_PORT |= _BV(YM_CS); // CS HIGH
+	YM_CTRL_PORT |= _BV(YM_CS);
 }
 

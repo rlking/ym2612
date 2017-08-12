@@ -12,8 +12,8 @@
 #define YM_DATA_DDR DDRF
 #define YM_DATA_PORT PORTF
 
-#define PORT_0 0
-#define PORT_1 1
+#define REGISTER_1 0
+#define REGISTER_2 1
 
 void write_ym(uint8_t data);
 void write_data(uint8_t reg, uint8_t data, uint8_t port);
