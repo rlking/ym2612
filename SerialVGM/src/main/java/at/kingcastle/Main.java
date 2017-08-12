@@ -22,8 +22,8 @@ public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
     public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
-    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
-    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
+    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
 
     public static InputStream in;
     public static OutputStream out;

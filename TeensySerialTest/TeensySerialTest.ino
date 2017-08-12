@@ -26,6 +26,7 @@ uint32_t count = 0;
 
 void loop() {
 	Serial.begin(1000000);
+	Serial.setTimeout(0);
 
 	//init
 	YM_CTRL_DDR |=
@@ -71,12 +72,12 @@ void loop() {
 		times++;
 		sumTime += micros() - startTime;
 		sumBytesRead += bytesRead;
-		if(bytesRead == 0) {
+		if (bytesRead == 0) {
 			break;
 		}
 	}
-	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu",
-			times, sumTime / times, sumBytesRead / times);
+	sprintf(log_buffer, "times: %lu average time: %lu average read: %lu", times,
+			sumTime / times, sumBytesRead / times);
 	Serial.println(log_buffer);
 	times = 0;
 	sumBytesRead = 0;
@@ -106,6 +107,11 @@ void loop() {
 	startTime = micros();
 	while (sumSamples < samples) {
 		if (count <= 3) {
+			// this timeout is for lags on the sending end
+			uint32_t startMillis = millis();
+			uint16_t timeout = 20;
+			while (Serial.available() == 0 && millis() - startMillis < timeout)
+				;
 			bytesRead = readChunk();
 			if (bytesRead <= 0 && count == 0) {
 				sprintf(log_buffer, "starved");
@@ -240,14 +246,14 @@ void loop() {
 		//sumTime += micros() - startTime2;
 	}
 	/*sprintf(log_buffer, "read times: %lu average time: %lu average read: %lu\n",
-			times2, sumTime2 / times2, sumBytesRead / times2);
-	Serial.print(log_buffer);
-	sprintf(log_buffer, "loop times: %lu average time: %luns\n", times,
-			(uint32_t) ((sumTime / (float) times) * 1000));
-	Serial.print(log_buffer);
-	sprintf(log_buffer, "calc time: %lu realTime: %lu", samples * 10 / 441,
-			(millis() - startPlayback));
-	Serial.print(log_buffer);*/
+	 times2, sumTime2 / times2, sumBytesRead / times2);
+	 Serial.print(log_buffer);
+	 sprintf(log_buffer, "loop times: %lu average time: %luns\n", times,
+	 (uint32_t) ((sumTime / (float) times) * 1000));
+	 Serial.print(log_buffer);
+	 sprintf(log_buffer, "calc time: %lu realTime: %lu", samples * 10 / 441,
+	 (millis() - startPlayback));
+	 Serial.print(log_buffer);*/
 }
 
 uint8_t readByte() {
