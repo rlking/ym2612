@@ -22,8 +22,10 @@ public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
     public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
-    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
+    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog 2");
     //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog 3 & Knuckles");
 
     public static InputStream in;
     public static OutputStream out;
@@ -110,10 +112,6 @@ public class Main {
             final String port = "COM4";
             int baudRate = 1000000;
             java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-            while (portEnum.hasMoreElements()) {
-                CommPortIdentifier portIdentifier = portEnum.nextElement();
-                System.out.println(portIdentifier.getName() + " - " + getPortTypeName(portIdentifier.getPortType()));
-            }
             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
             if (portIdentifier.isCurrentlyOwned()) {
                 System.out.println("Error: Port is currently in use");
@@ -122,11 +120,6 @@ public class Main {
 
                 if (commPort instanceof SerialPort) {
                     SerialPort serialPort = (SerialPort) commPort;
-                    if (port.equals("COM5")) {
-                        baudRate = 115200;
-                    } else {
-                        baudRate = 1000000;
-                    }
                     System.out.println("port: " + port + " baudRate: " + baudRate);
                     serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
@@ -247,14 +240,6 @@ public class Main {
                 break;
             }
 
-            if (waitSamples > 0) {
-                //System.out.printf("wait samples: %d ys: %d\n", waitSamples, (waitSamples * 1000000) / 44100);
-                //System.out.println("time passed " + (System.currentTimeMillis() - startTime) / 1000 + "s");
-                //long waitNanoSec = (waitSamples * 1000000000) / 44100;
-                //long waitMicrosSec = (waitSamples * 1000000) / 44100;
-                //busyWaitMicros(waitMicrosSec);
-            }
-
             if (bos.size() >= 1024) {
                 byte[] packet = bos.toByteArray();
                 out.write(packet);
@@ -285,22 +270,5 @@ public class Main {
         sb.append(low);
 
         return sb.toString();
-    }
-
-    static String getPortTypeName(int portType) {
-        switch (portType) {
-            case CommPortIdentifier.PORT_I2C:
-                return "I2C";
-            case CommPortIdentifier.PORT_PARALLEL:
-                return "Parallel";
-            case CommPortIdentifier.PORT_RAW:
-                return "Raw";
-            case CommPortIdentifier.PORT_RS485:
-                return "RS485";
-            case CommPortIdentifier.PORT_SERIAL:
-                return "Serial";
-            default:
-                return "unknown type";
-        }
     }
 }

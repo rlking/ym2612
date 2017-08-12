@@ -272,6 +272,9 @@ void readBytes(int n) {
 	}
 }
 
+/**
+ * fast circular buffer implementation pushing exactly the bytes received by Serial.readBytes
+ */
 int readChunk() {
 	int bytesRead = 0;
 	int bytesUntilOverflow = RINGBUFF_SIZE - dataOffset;
