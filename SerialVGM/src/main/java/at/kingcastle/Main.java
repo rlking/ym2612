@@ -165,6 +165,7 @@ public class Main {
         int loopOffset = ((music[28] << 0) & 0x000000FF) | ((music[29] << 8) & 0x0000FF00)
                 | ((music[30] << 16) & 0x00FF0000) | ((music[31] << 24) & 0xFF000000);
         System.out.println("loopOffset: " + loopOffset);
+        loopOffset += 0x1c; // make relative offset an absolute offset
 
         //loop samples
         int loopSamples = ((music[32] << 0) & 0x000000FF) | ((music[33] << 8) & 0x0000FF00)
@@ -175,9 +176,7 @@ public class Main {
         int vgmDataOffset = ((music[52] << 0) & 0x000000FF) | ((music[53] << 8) & 0x0000FF00)
                 | ((music[54] << 16) & 0x00FF0000) | ((music[55] << 24) & 0xFF000000);
         System.out.println("vgmDataOffset: " + vgmDataOffset);
-        if (vgmDataOffset == 0 || vgmDataOffset == (byte) 0x0c) {
-            //vgmDataOffset = 64;
-        }
+        vgmDataOffset += 0x34; // make relative offset an absolute offset
 
         out.write(music, 0, 64);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -254,7 +253,7 @@ public class Main {
             } else if (music[i] == (byte) 0x66) {
                 //0x66       : end of sound data
                 if (loopOffset != 0) {
-                    i = loopOffset + vgmDataOffset;
+                    i = loopOffset - 1;
                     continue;
                 }
                 bos.write(music, i, 1);
