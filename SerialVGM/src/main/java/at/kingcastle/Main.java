@@ -86,9 +86,9 @@ public class Main {
                             return false;
                         }
                     });
-                    //File[] playlist2 = new File[]{playlist[2]};
-                    File[] playlist2 = new File[playlist.length - 0];
-                    playlist2 = Arrays.copyOfRange(playlist, 0, playlist2.length);
+                    File[] playlist2 = new File[]{playlist[1]};
+                    //File[] playlist2 = new File[playlist.length - 0];
+                    //playlist2 = Arrays.copyOfRange(playlist, 0, playlist2.length);
                     for (File song : playlist2) {
                         System.out.println("playing " + song.getName());
                         BufferedInputStream in = new BufferedInputStream(new FileInputStream(song));
@@ -160,6 +160,24 @@ public class Main {
         int samples = ((music[24] << 0) & 0x000000FF) | ((music[25] << 8) & 0x0000FF00)
                 | ((music[26] << 16) & 0x00FF0000) | ((music[27] << 24) & 0xFF000000);
         System.out.println("samples: " + samples);
+
+        //loop offset
+        int loopOffset = ((music[28] << 0) & 0x000000FF) | ((music[29] << 8) & 0x0000FF00)
+                | ((music[30] << 16) & 0x00FF0000) | ((music[31] << 24) & 0xFF000000);
+        System.out.println("loopOffset: " + loopOffset);
+
+        //loop samples
+        int loopSamples = ((music[32] << 0) & 0x000000FF) | ((music[33] << 8) & 0x0000FF00)
+                | ((music[34] << 16) & 0x00FF0000) | ((music[35] << 24) & 0xFF000000);
+        System.out.println("loopSamples: " + loopSamples);
+
+        //data offset
+        int vgmDataOffset = ((music[52] << 0) & 0x000000FF) | ((music[53] << 8) & 0x0000FF00)
+                | ((music[54] << 16) & 0x00FF0000) | ((music[55] << 24) & 0xFF000000);
+        System.out.println("vgmDataOffset: " + vgmDataOffset);
+        if (vgmDataOffset == 0 || vgmDataOffset == (byte) 0x0c) {
+            //vgmDataOffset = 64;
+        }
 
         out.write(music, 0, 64);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -235,6 +253,10 @@ public class Main {
                 i += 4;
             } else if (music[i] == (byte) 0x66) {
                 //0x66       : end of sound data
+                if (loopOffset != 0) {
+                    i = loopOffset + vgmDataOffset;
+                    continue;
+                }
                 bos.write(music, i, 1);
                 break;
             } else {

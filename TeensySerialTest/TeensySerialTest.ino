@@ -105,7 +105,8 @@ void loop() {
 	readBytes(36);
 	startPlayback = millis();
 	startTime = micros();
-	while (sumSamples < samples) {
+	while(true) { // wait for end of data (loops = endless stream
+	//while (sumSamples < samples) {
 		if (count <= 3) {
 			// this timeout is for lags on the sending end
 			uint32_t startMillis = millis();
