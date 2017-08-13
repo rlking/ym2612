@@ -22,10 +22,11 @@ public class Main {
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\angelisland.vgm");
     public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\greenhill1.vgm");
     //public static File vgm = new File("C:\\Users\\kingc\\workspace\\ym2612\\island.vgm");
-    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
-    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog 2");
-    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
+    public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog 2");
     //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Sonic the Hedgehog 3 & Knuckles");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Golden Axe II");
+    //public static File dir = new File("C:\\Users\\kingc\\Dropbox\\ym2612\\Ecco the Dolphin");
 
     public static InputStream in;
     public static OutputStream out;
@@ -85,6 +86,7 @@ public class Main {
                             return false;
                         }
                     });
+                    //File[] playlist2 = new File[]{playlist[2]};
                     File[] playlist2 = new File[playlist.length - 0];
                     playlist2 = Arrays.copyOfRange(playlist, 0, playlist2.length);
                     for (File song : playlist2) {
