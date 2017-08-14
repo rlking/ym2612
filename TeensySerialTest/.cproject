@@ -20,18 +20,21 @@
 							<tool id="io.sloeber.tool.sketch.compiler.cpp.1975156990" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
 								<option id="io.sloeber.compiler.cpp.sketch.option.incpath.494557613" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TeensySerialTest/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/VGMPlayer/core/core}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.269491089" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
 							<tool commandLinePattern="${A.RECIPE.C.O.PATTERN.1} ${FLAGS} -D__IN_ECLIPSE__=1 ${INPUTS} ${A.RECIPE.C.O.PATTERN.2} ${OUTPUT} ${A.RECIPE.C.O.PATTERN.3} ${JANTJE.EXTRA.COMPILE} ${JANTJE.EXTRA.C.COMPILE}  -std=gnu11" id="io.sloeber.tool.compiler.c.1685385395" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
 								<option id="io.sloeber.compiler.c.sketch.option.incpath.626159005" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TeensySerialTest/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/VGMPlayer/core/core}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1893681751" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
 							<tool id="io.sloeber.tool.sketch.compiler.s.1717232050" name="Arduino Assembler" superClass="io.sloeber.tool.sketch.compiler.s">
 								<option id="io.sloeber.compiler.asm.sketch.option.incpath.2027683453" name="Include Paths (-I)" superClass="io.sloeber.compiler.asm.sketch.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TeensySerialTest/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/VGMPlayer/core/core}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.819652994" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

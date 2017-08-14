@@ -52,20 +52,20 @@ AR += \
 C:\Users\kingc\workspace\ym2612\TeensySerialTest\Release\arduino.ar \
 
 ELF += \
-TeensySerialTest.elf \
+VGMPlayer.elf \
 
 HEX += \
-TeensySerialTest.hex \
+VGMPlayer.hex \
 
 
 # All Target
-all: TeensySerialTest
+all: VGMPlayer
 
 # Tool invocations
-TeensySerialTest: $(HEX)
+VGMPlayer: $(HEX)
 	@echo 'Building target: $@'
 	@echo 'Printing size:'
-	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/TeensySerialTest.elf"
+	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/VGMPlayer.elf"
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -75,13 +75,13 @@ C:\Users\kingc\workspace\ym2612\TeensySerialTest\Release\arduino.ar: $(AR_OBJ)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-TeensySerialTest.elf: $(LINK_OBJ) $(AR)
+VGMPlayer.elf: $(LINK_OBJ) $(AR)
 	@echo 'Starting combiner'
-	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu=at90usb1286 -o "C:\Users\kingc\workspace\ym2612\TeensySerialTest/Release/TeensySerialTest.elf"   $(LINK_OBJ) $(AR)   C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/arduino.ar  "-LC:\Users\kingc\workspace\ym2612\TeensySerialTest/Release" -lm
+	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu=at90usb1286 -o "C:\Users\kingc\workspace\ym2612\TeensySerialTest/Release/VGMPlayer.elf"   $(LINK_OBJ) $(AR)   C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/arduino.ar  "-LC:\Users\kingc\workspace\ym2612\TeensySerialTest/Release" -lm
 	@echo 'Finished building: $@'
 	@echo ' '
 
-TeensySerialTest.hex: $(ELF)
+VGMPlayer.hex: $(ELF)
 	@echo 'Create eeprom image'
 	${A.RECIPE.OBJCOPY.EEP.PATTERN}
 	${A.RECIPE.OBJCOPY.HEX.PATTERN}

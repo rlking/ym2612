@@ -1,7 +1,8 @@
+#include "VGMPlayer.h"
+
 #include "Arduino.h"
 #include <stdio.h>
 #include <util/delay.h>
-#include "VgmPlayer.h"
 
 //The setup function is called once at startup of the sketch
 void setup() {
