@@ -193,14 +193,20 @@ public class Main {
             } else if (music[i] == (byte) 0x52) {
                 //0x52 aa dd : YM2612 port 0, write value dd to register aa
                 //write_data(music[i + 1], music[i + 2], PORT_0);
-                //System.out.printf("PORT_0: %x %x\n", music[i + 1], music[i + 2]);
+                if(music[i + 1] == (byte)0x40 || music[i + 1] == (byte)0x44 || music[i + 1] == (byte)0x48) {
+                    System.out.printf("PORT_0: %x %x\n", music[i + 1], music[i + 2]);
+                    music[i + 2] = 120;
+                }
                 bos.write(music, i, 3);
                 i += 2;
             } else if (music[i] == (byte) 0x53) {
                 //0x53 aa dd : YM2612 port 1, write value dd to register aa
                 //write_data(music[i + 1], music[i + 2], PORT_1);
-                bos.write(music, i, 3);
-                //System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
+                //bos.write(music, i, 3);
+                if(music[i + 1] == (byte)0x40 || music[i + 1] == (byte)0x44 || music[i + 1] == (byte)0x48) {
+                    System.out.printf("PORT_1: %x %x\n", music[i + 1], music[i + 2]);
+                    music[i + 2] = 120;
+                }
                 i += 2;
             } else if (music[i] == (byte) 0x50) {
                 //0x50	dd	PSG (SN76489/SN76496) write value dd
