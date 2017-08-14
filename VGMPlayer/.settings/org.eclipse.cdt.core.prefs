@@ -133,10 +133,10 @@ environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.DTS
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.DTS/value=3600
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.LOCAL/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.LOCAL/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.LOCAL/value=1502734346
+environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.LOCAL/value=1502734461
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.UTC/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.UTC/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.UTC/value=1502727146
+environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.UTC/value=1502727261
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.ZONE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.ZONE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.EXTRA.TIME.ZONE/value=3600
@@ -181,13 +181,13 @@ environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.AR.PATT
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.AR.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.AR}" rcs "${A.BUILD.PATH}/core/${A.ARCHIVE_FILE}" "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu\=at90usb1286 -o "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.elf" 
+environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu\=at90usb1286 -o "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.elf" 
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.2/value=\ 
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.3/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.3/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.3/value=\ "-LC\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release" -lm
+environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN.3/value=\ "-LC\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release" -lm
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.C.COMBINE.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.GCC}" ${A.BUILD.FLAGS.OPTIMIZE} ${A.BUILD.FLAGS.LD} ${A.BUILD.FLAGS.LDSPECS} ${A.BUILD.FLAGS.CPU} -o "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" ${A.OBJECT_FILES} "${A.BUILD.PATH}/${A.ARCHIVE_FILE}" "-L${A.BUILD.PATH}" ${A.BUILD.FLAGS.LIBS}
@@ -223,13 +223,13 @@ environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.HOOKS.P
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.HOOKS.POSTBUILD.1.PATTERN/value="${A.COMPILER.PATH}/teensy_post_compile" "-file\=${A.BUILD.PROJECT_NAME}" "-path\=${A.BUILD.PATH}" "-tools\=${A.COMPILER.PATH}" "-board\=${A.BUILD.BOARD}"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-objcopy" -O ihex -j .eeprom --set-section-flags\=.eeprom\=alloc,load --no-change-warnings --change-section-lma .eeprom\=0 "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.elf" "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.eep"
+environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-objcopy" -O ihex -j .eeprom --set-section-flags\=.eeprom\=alloc,load --no-change-warnings --change-section-lma .eeprom\=0 "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.elf" "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.eep"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.EEP.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.OBJCOPY}" ${A.COMPILER.OBJCOPY.EEP.FLAGS} "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.eep"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-objcopy" -O ihex -R .eeprom "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.elf" "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.hex"
+environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-objcopy" -O ihex -R .eeprom "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.elf" "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.hex"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.OBJCOPY.HEX.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.OBJCOPY}" ${A.COMPILER.ELF2HEX.FLAGS} "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.hex"
@@ -265,7 +265,7 @@ environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.S.O.PAT
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.S.O.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.GCC}" -c ${A.BUILD.FLAGS.OPTIMIZE} ${A.BUILD.FLAGS.COMMON} ${A.BUILD.FLAGS.DEP} ${A.BUILD.FLAGS.S} ${A.BUILD.FLAGS.CPU} ${A.BUILD.FLAGS.DEFS} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DF_CPU\=${A.BUILD.FCPU} -D${A.BUILD.USBTYPE} -DLAYOUT_${A.BUILD.KEYLAYOUT} ${A.INCLUDES} "${A.SOURCE_FILE}" -o "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C\:\\Users\\kingc\\workspace\\ym2612\\TeensySerialTest/Release/VGMPlayer.elf"
+environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN.1/value="C\:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C\:\\Users\\kingc\\workspace\\ym2612\\VGMPlayer/Release/VGMPlayer.elf"
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.373641825/A.RECIPE.SIZE.PATTERN/value="${A.COMPILER.PATH}${A.BUILD.TOOLCHAIN}${A.BUILD.COMMAND.SIZE}" -A "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf"

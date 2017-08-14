@@ -49,7 +49,7 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 AR += \
-C:\Users\kingc\workspace\ym2612\TeensySerialTest\Release\arduino.ar \
+C:\Users\kingc\workspace\ym2612\VGMPlayer\Release\arduino.ar \
 
 ELF += \
 VGMPlayer.elf \
@@ -65,19 +65,19 @@ all: VGMPlayer
 VGMPlayer: $(HEX)
 	@echo 'Building target: $@'
 	@echo 'Printing size:'
-	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/VGMPlayer.elf"
+	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-size" -A "C:/Users/kingc/workspace/ym2612/VGMPlayer/Release/VGMPlayer.elf"
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-C:\Users\kingc\workspace\ym2612\TeensySerialTest\Release\arduino.ar: $(AR_OBJ)
+C:\Users\kingc\workspace\ym2612\VGMPlayer\Release\arduino.ar: $(AR_OBJ)
 	@echo 'Starting archiver'
-	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-ar" rcs    C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/arduino.ar $(AR_OBJ)
+	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-ar" rcs    C:/Users/kingc/workspace/ym2612/VGMPlayer/Release/arduino.ar $(AR_OBJ)
 	@echo 'Finished building: $@'
 	@echo ' '
 
 VGMPlayer.elf: $(LINK_OBJ) $(AR)
 	@echo 'Starting combiner'
-	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu=at90usb1286 -o "C:\Users\kingc\workspace\ym2612\TeensySerialTest/Release/VGMPlayer.elf"   $(LINK_OBJ) $(AR)   C:/Users/kingc/workspace/ym2612/TeensySerialTest/Release/arduino.ar  "-LC:\Users\kingc\workspace\ym2612\TeensySerialTest/Release" -lm
+	"C:/Program Files (x86)/Arduino/hardware/teensy/../tools/avr/bin/avr-gcc" -Os -Wl,--gc-sections,--relax -mmcu=at90usb1286 -o "C:\Users\kingc\workspace\ym2612\VGMPlayer/Release/VGMPlayer.elf"   $(LINK_OBJ) $(AR)   C:/Users/kingc/workspace/ym2612/VGMPlayer/Release/arduino.ar  "-LC:\Users\kingc\workspace\ym2612\VGMPlayer/Release" -lm
 	@echo 'Finished building: $@'
 	@echo ' '
 
